@@ -1,0 +1,8 @@
+nginx:
+  build: nginx/.
+  ports:
+    - "5000:80"
+  volumes:
+    - "./files:/www/data/files"
+rclone:
+  build: rclone/.
