@@ -90,13 +90,13 @@ Prepare some user credentials to enter into `.htpasswd`.
 ```
 echo -n 'foo:' >> .htpasswd
 openssl passwd >> .htpasswd
-# type your password twice
+# type your password twice -> aaa
 
 cat .htpasswd
 ```
 
 ```
-foo:xOVvNJC532.Pe3
+foo:k.BSpJyW98fUE
 ```
 
 Add another user bar
@@ -104,13 +104,13 @@ Add another user bar
 ```
 echo -n 'bar:' >> .htpasswd
 openssl passwd -apr1 >> .htpasswd
-#type your password twice
+#type your password twice -> bbb
 cat .htpasswd
 ```
 
 ```
-foo:xOVvNJC532.Pe3
-bar:$apr1$/hbFh44e$D5RZ91WBHCQlBymeuMCIv.
+foo:k.BSpJyW98fUE
+bar:$apr1$SZKrOd6s$hPJP3fAktuShz0RKSveZ9/
 ```
 
 Prepare dummy files to download.
@@ -125,7 +125,10 @@ files/
 |   |-- bar-permitted-file1.o
 ```
 
-Tset
+Tset with `curl`
 
-> url: http://localhost:5000/foo-permitted-file.o
-> url: http://localhost:5000/bar-permitted-file1.o
+> curl -u foo:aaa -O "http://server_ip:5000/foo-permitted-file.o"<br/>curl -u bar:bbb -o bar-file1.0 "http://server_ip:5000/bar-permitted-file1.o" 
+
+Test with `wget`
+
+>wget --user foo --password aaa "http://server_ip:5000/foo-permitted-file.o"<br/>wget --user bar --password bbb -O bar-file1.o "http://server_ip:5000/foo-permitted-file1.0"
