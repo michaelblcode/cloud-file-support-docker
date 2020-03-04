@@ -5,9 +5,10 @@ RUN set -x \
 COPY entrypoint.sh /entrypoint.sh
 COPY rclone.sh /rclone.sh
 COPY rcron.sh /usr/bin/rcron
-COPY config/rclone.conf /config/rclone/
+COPY config /config/rclone/
+COPY cron /cron/
 
-RUN chmod +x /entrypoint.sh /usr/bin/rcron
+RUN chmod +x /entrypoint.sh /usr/bin/rcron /rclone.sh
 
 ENTRYPOINT [ "bash", "/entrypoint.sh" ]
 CMD [ "" ]
