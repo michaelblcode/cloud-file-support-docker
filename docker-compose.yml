@@ -1,19 +1,20 @@
 nginx:
-  container_name: nginx-server
-  
+  container_name: nginx-server  
   build: nginx/.
-  
   ports:
-    - "5000:80"
-  
+    - "8001:80"
   volumes:
     - "./files:/www/data/files"
 
 rclone:
-  container_name: rclone-server
-  
+  container_name: rclone-server    
   build: rclone/.
-  
+  command: bash
+  ports:
+    - "2595:2595"
+  env_file:
+    - ./rclone/env/config.env
   volumes:
     - "./files:/www/data/rsync"
-    - "./rclone/config:/config/rclone"
+  restart: always
+  tty: true

@@ -96,7 +96,7 @@ cat .htpasswd
 ```
 
 ```
-foo:k.BSpJyW98fUE
+foo:ImMLrG54rX5.Y
 ```
 
 Add another user bar
@@ -109,7 +109,7 @@ cat .htpasswd
 ```
 
 ```
-foo:k.BSpJyW98fUE
+foo:ImMLrG54rX5.Y
 bar:$apr1$SZKrOd6s$hPJP3fAktuShz0RKSveZ9/
 ```
 
