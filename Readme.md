@@ -132,3 +132,91 @@ Tset with `curl`
 Test with `wget`
 
 >wget --user foo --password aaa "http://server_ip:5000/foo-permitted-file.o"<br/>wget --user bar --password bbb -O bar-file1.o "http://server_ip:5000/foo-permitted-file1.0"
+
+
+### Testing `Crond` Inside Docker
+
+#### Step1: `crontab.conf` config
+
+Running `crond` requires a proper configuration file. You can easily add a crontab config file and have the container use it.
+A `crontab.conf` should look something like this.
+
+```
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * /rclone.sh run 2>&1
+```
+
+#### Step2: Mount your `crontab.conf` config
+
+You can use `COPY` in `Dockerfile` to mount into the container.
+
+```
+COPY cron/crontab.conf /cron/
+```
+
+#### Step3: `docker-compose up`
+
+With current config, cron job performs every minute. You can confirm it on console.
+
+### Testing `Rclone`
+
+#### Step1: Rclone remote test
+
+You should run below command to switch console into of Docker container.
+
+```
+$ docker exec -it CONTAINER bash
+bash-5.0#
+```
+
+Here you can run `rclone` manually to check it works well.
+
+```
+rclone lsd [remote]:
+```
+
+#### Step2: `rclone.conf` config
+
+Let's test with SFTP. Make sure you can handle a sftp server and have a valid credentials to access. You can use [MacOS](https://chainsawonatireswing.com/2012/08/09/how-to-set-up-an-sftp-server-on-a-mac-then-enable-a-friend-to-upload-files-to-it-from-their-iphone-ipad-or-other-idevice/) / [Linux](https://linuxconfig.org/how-to-setup-sftp-server-on-ubuntu-18-04-bionic-beaver-with-vsftpd) / [Windows](https://www.windowscentral.com/how-set-and-manage-ftp-server-windows-10) as sftp server.
+
+Config 2 remote providers
+
+```
+[sftp1]
+type = sftp
+host = sftp.example1.com
+user = remote_user1
+port = 22 # or 443
+pass = password1
+
+[sftp2]
+type = sftp
+host = sftp.example2.com
+user = remote_user2
+port = 22 # or 443
+pass = password2
+```
+
+Note that password should be obscured. Please run `rclone obscure {PASSWORD}` and use the encoded string as `pass`.
+
+#### Step3: `/rclone.sh` & `sync_list.conf` config
+
+Running /rclone.sh
+```
+/rclone.sh run
+```
+
+`rclone.sh` is running with configuration something like following.
+
+```
+sftp1:directory1/folder/report_1.zip,foo/directory1/folder/
+```
+By above configuration
+```
+rclone copy sftp1:directory1/folder/report_1.zip foo/directory1/folder/
+```
+If there is not `foo/directory1/folder`, it makes new folder and copies file.
+If the source has been changed, it overwrites to update the existing file.
+
+> Note that the source path should be valid.
